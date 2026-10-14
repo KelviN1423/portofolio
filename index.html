@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Kelvin · Roblox Scripter</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Semi+Condensed:ital,wght@0,500;0,600;1,500;1,600;1,700&display=swap">
+<style>
+/* Layout: a pause-menu. Left, a slanted list of games you move through; right, the selected game
+   in a cut frame over moving water. One committed night-blue world, no light variant. */
+:root {
+  --abyss: #030b26;
+  --deep: #07205f;
+  --royal: #0d45d6;
+  --cyan: #38dcff;
+  --foam: #eefaff;
+  --mist: #9fc6ee;
+  --display: "Anton", "Arial Narrow", Impact, sans-serif;
+  --body: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--abyss); color: var(--foam); font-family: var(--body); font-size: 17px; line-height: 1.45; overflow-x: hidden; }
+#sea { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.stage { position: relative; z-index: 1; min-height: 100%; max-width: 1240px; margin-inline: auto; padding-inline: 20px; padding-block: 22px 40px; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr); grid-template-rows: auto 1fr; gap: 10px 36px; }
+
+/* top strip: name left, moon right */
+.top { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.name { font-family: var(--display); font-size: clamp(54px, 9vw, 120px); line-height: 0.86; letter-spacing: 0.01em; transform: skewX(-9deg); transform-origin: left bottom; text-transform: uppercase; margin: 0; }
+.name small { display: block; font-family: var(--body); font-style: italic; font-weight: 600; font-size: clamp(16px, 2vw, 22px); letter-spacing: 0.02em; text-transform: none; color: var(--cyan); margin-top: 10px; }
+.moon { display: flex; align-items: center; gap: 12px; text-align: right; font-style: italic; font-weight: 600; flex-shrink: 0; }
+.moon svg { width: 62px; height: 62px; display: block; }
+.moon .day { font-family: var(--display); font-size: 30px; line-height: 1; font-style: normal; }
+.moon .phase { color: var(--mist); font-size: 15px; }
+
+/* menu */
+.menu { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; align-self: start; position: relative; }
+.menu button { all: unset; box-sizing: border-box; cursor: pointer; display: block; width: 100%; position: relative; padding: 6px 18px 6px 26px; font-family: var(--display); font-size: clamp(30px, 4.4vw, 56px); line-height: 1.02; text-transform: uppercase; transform: skewX(-9deg); color: var(--mist); transition: color 0.18s, padding-left 0.22s cubic-bezier(.2,.9,.2,1); opacity: 0; animation: slide 0.5s cubic-bezier(.2,.9,.2,1) forwards; animation-delay: calc(var(--i) * 70ms + 150ms); }
+.menu button::before { content: ""; position: absolute; inset: 0; background: var(--foam); transform: scaleX(0); transform-origin: left center; transition: transform 0.24s cubic-bezier(.2,.9,.2,1); z-index: -1; }
+.menu button[aria-current="true"] { color: var(--deep); padding-left: 44px; }
+.menu button[aria-current="true"]::before { transform: scaleX(1); }
+.menu button:hover { color: var(--foam); }
+.menu button[aria-current="true"]:hover { color: var(--deep); }
+.menu button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+.menu .kind { display: block; font-family: var(--body); font-style: italic; font-weight: 600; font-size: 15px; letter-spacing: 0.02em; text-transform: none; opacity: 0.8; margin-top: -2px; }
+@keyframes slide { from { opacity: 0; translate: -60px 0; } to { opacity: 1; translate: 0 0; } }
+.hint { margin-top: 18px; color: var(--mist); font-style: italic; font-size: 15px; }
+.hint kbd { font-family: var(--body); font-style: normal; font-weight: 600; border: 1.5px solid var(--mist); padding: 0 6px; margin-right: 2px; }
+
+/* detail */
+.detail { align-self: start; min-width: 0; margin-top: 14px; }
+.frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--deep); clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%); }
+.frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.frame img.in { animation: wipe 0.45s cubic-bezier(.2,.9,.2,1); }
+@keyframes wipe { from { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); } to { clip-path: polygon(0 0, 110% 0, 100% 100%, 0 100%); } }
+.frame .empty { position: absolute; inset: 0; display: grid; place-items: center; font-style: italic; color: var(--mist); padding: 0 12%; text-align: center; }
+.edge { height: 8px; background: var(--cyan); width: 62%; margin: 8px 0 0 3%; transform: skewX(-38deg); }
+.shots { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0 2%; padding: 0; list-style: none; }
+.shots button { all: unset; cursor: pointer; font-style: italic; font-weight: 600; font-size: 15px; padding: 2px 12px; transform: skewX(-9deg); border: 1.5px solid var(--royal); color: var(--mist); }
+.shots button[aria-pressed="true"] { background: var(--cyan); border-color: var(--cyan); color: var(--abyss); }
+.shots button:focus-visible { outline: 3px solid var(--foam); outline-offset: 2px; }
+.words { margin: 18px 0 0 2%; max-width: 54ch; }
+.words h2 { font-family: var(--display); font-size: clamp(28px, 3.6vw, 44px); line-height: 1; text-transform: uppercase; margin: 0 0 8px; transform: skewX(-9deg); transform-origin: left; }
+.words p { margin: 0; font-size: 19px; }
+.words .cap { color: var(--cyan); font-style: italic; font-weight: 600; margin-top: 8px; font-size: 17px; }
+.did { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 0 0; padding: 0; list-style: none; font-style: italic; font-weight: 600; color: var(--mist); }
+.did li::before { content: "/ "; color: var(--royal); }
+.handles { margin: 12px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 20px; }
+.handles span { user-select: all; font-weight: 600; color: var(--cyan); }
+.swap { animation: rise 0.32s cubic-bezier(.2,.9,.2,1); }
+@keyframes rise { from { opacity: 0; translate: 26px 0; } to { opacity: 1; translate: 0 0; } }
+
+@media (max-width: 820px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .moon .phase { display: none; }
+  .hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu button { animation: none; opacity: 1; }
+  .frame img.in, .swap { animation: none; }
+}
+</style>
+
+</head>
+<body>
+<canvas id="sea" aria-hidden="true"></canvas>
+
+<main class="stage">
+  <div class="top">
+    <h1 class="name">Kelvin<small>Roblox scripter and builder. I make the systems and the world they run in.</small></h1>
+    <div class="moon" id="moon" aria-label="Tonight's moon"></div>
+  </div>
+
+  <nav aria-label="Games and info">
+    <ul class="menu" id="menu"></ul>
+    <p class="hint"><kbd>↑</kbd><kbd>↓</kbd> to move</p>
+  </nav>
+
+  <section class="detail" id="detail" aria-live="polite"></section>
+</main>
+
+<script>
+// Each menu entry. "Work" is screenshots only (no game names, by request); the others are words.
+const ENTRIES = [
+  {
+    id: "work",
+    name: "Work",
+    kind: "Screens from games I worked on",
+    line: "Everything here is quick work: each one took three or four days.",
+    did: ["map building", "horror fear system", "monster AI", "simulator bases", "riding and flight", "carry and sleep loop", "radars", "inventory and hotbar", "economy", "admin panel"],
+    shots: [
+      { src: "img/town.jpg", tab: "Town", cap: "A market town with a clock tower and a fountain square." },
+      { src: "img/hilltown.jpg", tab: "Hill town", cap: "A second town packed onto a ridge." },
+      { src: "img/map.jpg", tab: "Hub", cap: "Eight player ranches around the market stalls." },
+      { src: "img/forest.jpg", tab: "Night forest", cap: "A horror arena: dead trees, fog and flickering lamps." },
+      { src: "img/graveyard.jpg", tab: "Graveyard", cap: "Something with red eyes waits by the gate." },
+      { src: "img/plaza.jpg", tab: "Plaza", cap: "A simulator plaza: player bases, a walk track and a row of shops." },
+      { src: "img/skytrack.jpg", tab: "Sky track", cap: "A floating track of themed zones, each behind its own gate." },
+      { src: "img/ride.jpg", tab: "Ride", cap: "The run cycle is code, not an uploaded animation." },
+      { src: "img/carry.jpg", tab: "Carry", cap: "Pick one up and the clock starts." },
+      { src: "img/radars.jpg", tab: "Radars", cap: "Six radars, each built from one row of config." },
+    ],
+  },
+  {
+    id: "about",
+    name: "About",
+    kind: "Who is behind this",
+    line: "I can do almost any kind of Roblox work: maps and terrain, movement, progression, saving, tools, balance. The screens under Work are quick jobs of three or four days each, so judge them as that. Give me longer and you get more.",
+    did: ["building", "terrain", "Luau", "Rojo", "client and server", "DataStores", "balancing"],
+  },
+  {
+    id: "contact",
+    name: "Contact",
+    kind: "Open to scripting and building work",
+    line: "Message me on Discord.",
+    handles: [["Discord", "spkelvin"], ["Roblox", "Kelvin_bWt"]],
+  },
+];
+
+const menu = document.getElementById("menu");
+const detail = document.getElementById("detail");
+let current = 0;
+let shot = 0;
+
+function el(tag, props, kids) {
+  const n = document.createElement(tag);
+  Object.assign(n, props || {});
+  (kids || []).forEach((k) => n.append(k));
+  return n;
+}
+
+function renderDetail() {
+  const e = ENTRIES[current];
+  const box = el("div", { className: "swap" });
+  if (e.shots) {
+    const s = e.shots[shot];
+    const img = el("img", { src: s.src, alt: s.tab + " screenshot", className: "in" });
+    box.append(el("div", { className: "frame" }, [img]), el("div", { className: "edge" }));
+    const tabs = el("ul", { className: "shots" });
+    e.shots.forEach((x, i) => {
+      const b = el("button", { type: "button", textContent: x.tab });
+      b.setAttribute("aria-pressed", String(i === shot));
+      b.addEventListener("click", () => { shot = i; renderDetail(); });
+      tabs.append(el("li", {}, [b]));
+    });
+    box.append(tabs);
+  }
+  const words = el("div", { className: "words" });
+  // the work entry is pictures only: no title, no game name
+  if (!e.shots) words.append(el("h2", { textContent: e.name }));
+  if (e.line) words.append(el("p", { textContent: e.line }));
+  if (e.shots) words.append(el("p", { className: "cap", textContent: e.shots[shot].cap }));
+  if (e.did) {
+    const did = el("ul", { className: "did" });
+    e.did.forEach((d) => did.append(el("li", { textContent: d })));
+    words.append(did);
+  }
+  if (e.handles) {
+    const h = el("ul", { className: "handles" });
+    e.handles.forEach(([k, v]) => h.append(el("li", {}, [k + ": ", el("span", { textContent: v })])));
+    words.append(h);
+  }
+  box.append(words);
+  detail.replaceChildren(box);
+}
+
+function select(i, focus) {
+  current = (i + ENTRIES.length) % ENTRIES.length;
+  shot = 0;
+  [...menu.querySelectorAll("button")].forEach((b, n) => {
+    b.setAttribute("aria-current", String(n === current));
+    if (n === current && focus) b.focus();
+  });
+  renderDetail();
+}
+
+ENTRIES.forEach((e, i) => {
+  const b = el("button", { type: "button" }, [e.name, el("span", { className: "kind", textContent: e.kind })]);
+  b.style.setProperty("--i", i);
+  b.addEventListener("click", () => select(i));
+  menu.append(el("li", {}, [b]));
+});
+document.addEventListener("keydown", (ev) => {
+  if (ev.key === "ArrowDown") { ev.preventDefault(); select(current + 1, true); }
+  if (ev.key === "ArrowUp") { ev.preventDefault(); select(current - 1, true); }
+});
+select(0);
+
+// Tonight's real moon, drawn from the date.
+(function moon() {
+  const now = new Date();
+  const synodic = 29.530588853;
+  const ref = Date.UTC(2000, 0, 6, 18, 14); // a known new moon
+  const age = (((now.getTime() - ref) / 86400000) % synodic + synodic) % synodic;
+  const p = age / synodic; // 0 new, 0.5 full
+  const names = ["New moon", "Waxing crescent", "First quarter", "Waxing gibbous", "Full moon", "Waning gibbous", "Last quarter", "Waning crescent"];
+  const name = names[Math.round(p * 8) % 8];
+  const r = 28, cx = 31, cy = 31;
+  const waxing = p < 0.5;
+  const k = Math.cos(p * 2 * Math.PI); // 1 new, -1 full
+  const rx = Math.abs(k) * r;
+  // lit half on the right when waxing; the terminator ellipse adds or removes the other half
+  const sweepOuter = waxing ? 1 : 0;
+  const sweepInner = (k < 0) === waxing ? 1 : 0;
+  const d = `M ${cx} ${cy - r} A ${r} ${r} 0 0 ${sweepOuter} ${cx} ${cy + r} A ${rx} ${r} 0 0 ${sweepInner} ${cx} ${cy - r} Z`;
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  document.getElementById("moon").innerHTML =
+    `<div><div class="day">${now.getMonth() + 1}/${now.getDate()} ${days[now.getDay()]}</div><div class="phase">${name}</div></div>` +
+    `<svg viewBox="0 0 62 62" role="img" aria-label="${name}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#07205f" stroke="#38dcff" stroke-width="1.5"/><path d="${d}" fill="#eefaff"/></svg>`;
+})();
+
+// Water: slow slanted bands and widening rings.
+(function sea() {
+  const c = document.getElementById("sea");
+  const g = c.getContext("2d");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let w = 0, h = 0, rings = [];
+  function size() {
+    const d = Math.min(devicePixelRatio || 1, 2);
+    w = c.clientWidth; h = c.clientHeight;
+    c.width = w * d; c.height = h * d;
+    g.setTransform(d, 0, 0, d, 0, 0);
+  }
+  function frame(t) {
+    const s = t / 1000;
+    const grad = g.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, "#030b26"); grad.addColorStop(0.55, "#07205f"); grad.addColorStop(1, "#0d45d6");
+    g.fillStyle = grad; g.fillRect(0, 0, w, h);
+    // slanted bands drifting right
+    g.save();
+    g.transform(1, 0, -0.42, 1, 0, 0);
+    for (let i = 0; i < 9; i++) {
+      const bw = 40 + (i * 53) % 150;
+      const x = ((i * 310 + s * (10 + i * 3)) % (w + h + 500)) - 200;
+      g.fillStyle = `rgba(56,220,255,${0.03 + (i % 3) * 0.022})`;
+      g.fillRect(x, 0, bw, h);
+    }
+    g.restore();
+    // rings
+    if (!still && Math.random() < 0.012 && rings.length < 5) rings.push({ x: Math.random() * w, y: h * (0.35 + Math.random() * 0.65), born: s });
+    rings = rings.filter((r) => s - r.born < 7);
+    for (const r of rings) {
+      const a = (s - r.born) / 7;
+      g.strokeStyle = `rgba(238,250,255,${0.22 * (1 - a)})`;
+      g.lineWidth = 1.5;
+      for (let k = 0; k < 3; k++) {
+        const rad = a * 260 - k * 34;
+        if (rad > 0) { g.beginPath(); g.ellipse(r.x, r.y, rad, rad * 0.32, 0, 0, Math.PI * 2); g.stroke(); }
+      }
+    }
+    if (!still) requestAnimationFrame(frame);
+  }
+  addEventListener("resize", () => { size(); if (still) frame(0); });
+  size();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
