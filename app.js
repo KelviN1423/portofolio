@@ -48,7 +48,7 @@ const ENTRIES = [
     line: "Pick a client to see what I built for them.",
     clients: [
       {
-        user: "Altar",
+        user: "altariuse",
         line: "An asymmetric horror map: a gothic hall, a pizzeria wing and a dead forest, with every pallet, window and exit gate placed for chases.",
         did: ["gothic hall", "interiors", "chase loops", "pallets and vaults", "exit gates", "lighting"],
         shots: [
