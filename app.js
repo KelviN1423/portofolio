@@ -45,7 +45,26 @@ const ENTRIES = [
     id: "customers",
     name: "Customer Builds",
     kind: "Work I did for clients",
-    line: "Client builds go up here once the client is fine with it being shown.",
+    line: "Pick a client to see what I built for them.",
+    clients: [
+      {
+        user: "Altar",
+        line: "An asymmetric horror map: a gothic hall, a pizzeria wing and a dead forest, with every pallet, window and exit gate placed for chases.",
+        did: ["gothic hall", "interiors", "chase loops", "pallets and vaults", "exit gates", "lighting"],
+        shots: [
+          { src: "img/client-horror-overview.jpg", tab: "Overview", cap: "The whole map in the fog: the hall, the wooden house and the outer walls." },
+          { src: "img/client-horror-front-entrance.jpg", tab: "Entrance", cap: "Gothic front with the main doors open." },
+          { src: "img/client-horror-grand-hall.jpg", tab: "Hall", cap: "Through the doors: carpet, round balcony and the statue in the middle." },
+          { src: "img/client-horror-angel-statue.jpg", tab: "Statue", cap: "A mossy, cracked angel under the moonlight from the dome." },
+          { src: "img/client-horror-staircase.jpg", tab: "Stairs", cap: "Long stairs up to the balcony, chandelier above." },
+          { src: "img/client-horror-balcony.jpg", tab: "Balcony", cap: "Looking down at the statue from the second floor." },
+          { src: "img/client-horror-facility-hallway.jpg", tab: "Hallway", cap: "Checkered halls in the side wing." },
+          { src: "img/client-horror-party-room.jpg", tab: "Party room", cap: "Booths, stage and balloons, with pallet loops between the booths." },
+          { src: "img/client-horror-wooden-house.jpg", tab: "House", cap: "A half collapsed wooden house with a bell tower." },
+          { src: "img/client-horror-exit-gate.jpg", tab: "Exit gate", cap: "Iron exit gate with its lever box." },
+        ],
+      },
+    ],
   },
   {
     id: "reviews",
@@ -74,6 +93,7 @@ const menu = document.getElementById("menu");
 const detail = document.getElementById("detail");
 let current = 0;
 let shot = 0;
+let client = 0;
 
 function el(tag, props, kids) {
   const n = document.createElement(tag);
@@ -85,6 +105,11 @@ function el(tag, props, kids) {
 function renderDetail() {
   const e = ENTRIES[current];
   const box = el("div", { className: "swap" });
+  if (e.clients) {
+    renderClients(e, box);
+    detail.replaceChildren(box);
+    return;
+  }
   if (e.shots) {
     const s = e.shots[shot];
     const img = el("img", { src: s.src, alt: s.tab + " screenshot", className: "in" });
@@ -116,6 +141,54 @@ function renderDetail() {
   if (e.reviews) words.append(reviewsBlock());
   box.append(words);
   detail.replaceChildren(box);
+}
+
+// Customer Builds: one tab per client (their username), and a slideshow of that client's screens.
+function renderClients(e, box) {
+  const c = e.clients[client];
+  const s = c.shots[shot];
+  const users = el("ul", { className: "users" });
+  e.clients.forEach((x, i) => {
+    const b = el("button", { type: "button", textContent: "@" + x.user });
+    b.setAttribute("aria-pressed", String(i === client));
+    b.addEventListener("click", () => { client = i; shot = 0; renderDetail(); });
+    users.append(el("li", {}, [b]));
+  });
+  const go = (d) => { shot = (shot + d + c.shots.length) % c.shots.length; renderDetail(); };
+  const prev = el("button", { type: "button", className: "nav prev", textContent: "‹" });
+  const next = el("button", { type: "button", className: "nav next", textContent: "›" });
+  prev.setAttribute("aria-label", "Previous screenshot");
+  next.setAttribute("aria-label", "Next screenshot");
+  prev.addEventListener("click", () => go(-1));
+  next.addEventListener("click", () => go(1));
+  const img = el("img", { src: s.src, alt: s.tab + " screenshot", className: "in" });
+  const count = el("span", { className: "count", textContent: `${shot + 1} / ${c.shots.length}` });
+  const frame = el("div", { className: "frame slide" }, [img, prev, next, count]);
+  let x0 = null;
+  frame.addEventListener("touchstart", (ev) => { x0 = ev.touches[0].clientX; }, { passive: true });
+  frame.addEventListener("touchend", (ev) => {
+    if (x0 === null) return;
+    const dx = ev.changedTouches[0].clientX - x0;
+    x0 = null;
+    if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+  });
+  const dots = el("div", { className: "dots" });
+  c.shots.forEach((_, i) => {
+    const d = el("button", { type: "button" });
+    d.setAttribute("aria-label", "Screenshot " + (i + 1));
+    d.setAttribute("aria-pressed", String(i === shot));
+    d.addEventListener("click", () => { shot = i; renderDetail(); });
+    dots.append(d);
+  });
+  box.append(users, frame, el("div", { className: "edge" }), dots);
+  const words = el("div", { className: "words" });
+  words.append(el("p", { textContent: c.line }), el("p", { className: "cap", textContent: s.cap }));
+  if (c.did) {
+    const did = el("ul", { className: "did" });
+    c.did.forEach((d) => did.append(el("li", { textContent: d })));
+    words.append(did);
+  }
+  box.append(words);
 }
 
 // Reviews live on a small server (see the setup notes). Only people with a one-time code can post.
@@ -235,6 +308,7 @@ function reviewForm() {
 function select(i, focus) {
   current = (i + ENTRIES.length) % ENTRIES.length;
   shot = 0;
+  client = 0;
   [...menu.querySelectorAll("button")].forEach((b, n) => {
     b.setAttribute("aria-current", String(n === current));
     if (n === current && focus) b.focus();
@@ -250,6 +324,12 @@ ENTRIES.forEach((e, i) => {
 });
 document.addEventListener("keydown", (ev) => {
   if (ev.target.closest && ev.target.closest("input, textarea, select")) return;
+  if (ENTRIES[current].clients && (ev.key === "ArrowLeft" || ev.key === "ArrowRight")) {
+    const n = ENTRIES[current].clients[client].shots.length;
+    shot = (shot + (ev.key === "ArrowRight" ? 1 : -1) + n) % n;
+    renderDetail();
+    return;
+  }
   if (ev.key === "ArrowDown") { ev.preventDefault(); select(current + 1, true); }
   if (ev.key === "ArrowUp") { ev.preventDefault(); select(current - 1, true); }
 });
