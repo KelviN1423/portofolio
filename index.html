@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://kelvin-reviews.kelvinbtw321.workers.dev; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Kelvin · Roblox Scripter</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Semi+Condensed:ital,wght@0,500;0,600;1,500;1,600;1,700&display=swap">
@@ -66,6 +68,41 @@ body { background: var(--abyss); color: var(--foam); font-family: var(--body); f
 .did li::before { content: "/ "; color: var(--royal); }
 .handles { margin: 12px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 20px; }
 .handles span { user-select: all; font-weight: 600; color: var(--cyan); }
+.rating { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-left: 0.3em; vertical-align: middle; position: relative; top: -0.25em; padding: 6px 12px; font-family: var(--body); font-size: clamp(17px, 2.2vw, 24px); font-weight: 700; font-style: normal; line-height: 1; letter-spacing: 0; text-transform: none; color: var(--foam); background: rgba(3, 11, 38, 0.55); border: 1.5px solid var(--royal); }
+.rating:hover { border-color: var(--cyan); }
+.rating:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+.rbar { position: relative; display: inline-block; white-space: nowrap; letter-spacing: 2px; line-height: 1; }
+.rbg { color: #56648f; }
+.rfg { position: absolute; left: 0; top: 0; overflow: hidden; white-space: nowrap; color: #ffd166; }
+.rcount { color: var(--mist); font-weight: 600; }
+.reviews { margin-top: 18px; }
+.rsum { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--mist); font-style: italic; font-weight: 600; margin: 0 0 12px; font-size: 18px; }
+.rsum .rbar { font-size: 24px; font-style: normal; }
+.rbig { font-family: var(--display); font-style: normal; font-size: 40px; line-height: 1; color: var(--foam); }
+.rlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.rcard { background: rgba(3, 11, 38, 0.55); border-left: 4px solid var(--cyan); padding: 10px 14px; }
+.rhead { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.rname { font-weight: 700; }
+.rstars { color: #ffd166; letter-spacing: 2px; }
+.rtext { margin: 4px 0 2px; font-size: 17px; overflow-wrap: anywhere; }
+.rdate { color: var(--mist); font-size: 14px; font-style: italic; }
+.rform { margin-top: 14px; }
+.rform summary { cursor: pointer; font-style: italic; font-weight: 600; color: var(--cyan); }
+.rform form { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; background: rgba(3, 11, 38, 0.55); padding: 14px; }
+.rfield { display: flex; flex-direction: column; gap: 4px; font-weight: 600; }
+.rfield span { font-size: 14px; color: var(--mist); }
+.rform input, .rform textarea { font: inherit; color: var(--foam); background: rgba(7, 32, 95, 0.6); border: 1.5px solid var(--royal); padding: 8px 10px; }
+.rform input:focus-visible, .rform textarea:focus-visible { outline: 2px solid var(--cyan); }
+.rpick { border: 0; padding: 0; margin: 0; display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 4px; }
+.rpick legend { font-size: 14px; color: var(--mist); font-weight: 600; margin-bottom: 4px; }
+.rpick input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.rpick label { font-size: 30px; line-height: 1; color: #3b4a7a; cursor: pointer; }
+.rpick input:checked ~ label, .rpick label:hover, .rpick label:hover ~ label { color: #ffd166; }
+.rpick input:focus-visible + label { outline: 2px solid var(--cyan); }
+.rsend { all: unset; align-self: flex-start; cursor: pointer; background: var(--cyan); color: var(--abyss); font-weight: 700; padding: 6px 16px; transform: skewX(-9deg); }
+.rsend:disabled { opacity: 0.6; cursor: default; }
+.rmsg { margin: 0; min-height: 1.4em; color: var(--mist); }
+.rmsg.err { color: #ff8a8a; }
 .swap { animation: rise 0.32s cubic-bezier(.2,.9,.2,1); }
 @keyframes rise { from { opacity: 0; translate: 26px 0; } to { opacity: 1; translate: 0 0; } }
 
@@ -86,7 +123,7 @@ body { background: var(--abyss); color: var(--foam); font-family: var(--body); f
 
 <main class="stage">
   <div class="top">
-    <h1 class="name">Kelvin<small>Roblox scripter and builder. I make the systems and the world they run in.</small></h1>
+    <h1 class="name">Kelvin<button type="button" class="rating" id="rating" title="See reviews"></button><small>Roblox scripter and builder. I make the systems and the world they run in.</small></h1>
     <div class="moon" id="moon" aria-label="Tonight's moon"></div>
   </div>
 
@@ -98,207 +135,6 @@ body { background: var(--abyss); color: var(--foam); font-family: var(--body); f
   <section class="detail" id="detail" aria-live="polite"></section>
 </main>
 
-<script>
-const ENTRIES = [
-  {
-    id: "work",
-    name: "Work",
-    kind: "Screens from games I worked on",
-    line: "Everything here is quick work: each one took three or four days.",
-    did: ["map building", "horror fear system", "monster AI", "simulator bases", "riding and flight", "carry and sleep loop", "radars", "inventory and hotbar", "economy", "admin panel"],
-    shots: [
-      { src: "img/town.jpg", tab: "Town", cap: "A market town with a clock tower and a fountain square." },
-      { src: "img/hilltown.jpg", tab: "Hill town", cap: "A second town packed onto a ridge." },
-      { src: "img/map.jpg", tab: "Hub", cap: "Eight player ranches around the market stalls." },
-      { src: "img/forest.jpg", tab: "Night forest", cap: "A horror arena: dead trees, fog and flickering lamps." },
-      { src: "img/graveyard.jpg", tab: "Graveyard", cap: "Something with red eyes waits by the gate." },
-      { src: "img/plaza.jpg", tab: "Plaza", cap: "A simulator plaza: player bases, a walk track and a row of shops." },
-      { src: "img/skytrack.jpg", tab: "Sky track", cap: "A floating track of themed zones, each behind its own gate." },
-      { src: "img/ride.jpg", tab: "Ride", cap: "The run cycle is code, not an uploaded animation." },
-      { src: "img/carry.jpg", tab: "Carry", cap: "Pick one up and the clock starts." },
-      { src: "img/radars.jpg", tab: "Radars", cap: "Six radars, each built from one row of config." },
-    ],
-  },
-  {
-    id: "scifi",
-    name: "Sci-fi",
-    kind: "Desert outpost and battle arena",
-    line: "A sunken duel arena in a canyon, with a crashed warship, a small settlement and a landing pad around it.",
-    did: ["terrain", "arena layout", "props", "lighting", "about 3,000 parts", "streaming"],
-    shots: [
-      { src: "img/scifi-overview.jpg", tab: "Overview", cap: "The whole map: arena in the middle, canyon walls all around." },
-      { src: "img/scifi-pit.jpg", tab: "Arena", cap: "Stone pit with stepped edges and cover to fight around." },
-      { src: "img/scifi-wreck.jpg", tab: "Wreck", cap: "A warship half buried in the dunes, still smoking." },
-      { src: "img/scifi-market.jpg", tab: "Market", cap: "Domed huts and market stalls next to the arena." },
-    ],
-  },
-  {
-    id: "medieval",
-    name: "Medieval",
-    kind: "Gothic cathedral, inside and out",
-    line: "A full cathedral with a furnished interior: vaults, stained glass, pews, altar and an organ loft.",
-    did: ["exterior", "interiors", "stained glass", "lighting"],
-    shots: [
-      { src: "img/cathedral.jpg", tab: "Cathedral", cap: "Twin spires, three portals, a rose window." },
-      { src: "img/cathedral-portals.jpg", tab: "Portals", cap: "Statues in the door jambs, the arches and the gallery above." },
-      { src: "img/cathedral-interior-nave.jpg", tab: "Nave", cap: "Inside: rib vaults, stained glass, pews down to the altar." },
-      { src: "img/cathedral-interior-west.jpg", tab: "Organ", cap: "Looking back at the organ loft and the west rose." },
-      { src: "img/cathedral-interior-aisle.jpg", tab: "Aisle", cap: "Side aisle, lit by candles and the windows." },
-    ],
-  },
-  {
-    id: "about",
-    name: "About",
-    kind: "Who is behind this",
-    line: "I've been building on Roblox for two years and scripting for one. I can do almost any kind of Roblox work: maps and terrain, movement, progression, saving, tools, balance. The screens under Work are quick jobs of three or four days each, so judge them as that. Give me longer and you get more.",
-    did: ["building", "terrain", "Luau", "Rojo", "client and server", "DataStores", "balancing"],
-  },
-  {
-    id: "contact",
-    name: "Contact",
-    kind: "Open to scripting and building work",
-    line: "Message me on Discord.",
-    handles: [["Discord", "spkelvin"], ["Roblox", "Kelvin_bWt"]],
-  },
-];
-
-const menu = document.getElementById("menu");
-const detail = document.getElementById("detail");
-let current = 0;
-let shot = 0;
-
-function el(tag, props, kids) {
-  const n = document.createElement(tag);
-  Object.assign(n, props || {});
-  (kids || []).forEach((k) => n.append(k));
-  return n;
-}
-
-function renderDetail() {
-  const e = ENTRIES[current];
-  const box = el("div", { className: "swap" });
-  if (e.shots) {
-    const s = e.shots[shot];
-    const img = el("img", { src: s.src, alt: s.tab + " screenshot", className: "in" });
-    box.append(el("div", { className: "frame" }, [img]), el("div", { className: "edge" }));
-    const tabs = el("ul", { className: "shots" });
-    e.shots.forEach((x, i) => {
-      const b = el("button", { type: "button", textContent: x.tab });
-      b.setAttribute("aria-pressed", String(i === shot));
-      b.addEventListener("click", () => { shot = i; renderDetail(); });
-      tabs.append(el("li", {}, [b]));
-    });
-    box.append(tabs);
-  }
-  const words = el("div", { className: "words" });
-  // pictures only
-  if (!e.shots) words.append(el("h2", { textContent: e.name }));
-  if (e.line) words.append(el("p", { textContent: e.line }));
-  if (e.shots) words.append(el("p", { className: "cap", textContent: e.shots[shot].cap }));
-  if (e.did) {
-    const did = el("ul", { className: "did" });
-    e.did.forEach((d) => did.append(el("li", { textContent: d })));
-    words.append(did);
-  }
-  if (e.handles) {
-    const h = el("ul", { className: "handles" });
-    e.handles.forEach(([k, v]) => h.append(el("li", {}, [k + ": ", el("span", { textContent: v })])));
-    words.append(h);
-  }
-  box.append(words);
-  detail.replaceChildren(box);
-}
-
-function select(i, focus) {
-  current = (i + ENTRIES.length) % ENTRIES.length;
-  shot = 0;
-  [...menu.querySelectorAll("button")].forEach((b, n) => {
-    b.setAttribute("aria-current", String(n === current));
-    if (n === current && focus) b.focus();
-  });
-  renderDetail();
-}
-
-ENTRIES.forEach((e, i) => {
-  const b = el("button", { type: "button" }, [e.name, el("span", { className: "kind", textContent: e.kind })]);
-  b.style.setProperty("--i", i);
-  b.addEventListener("click", () => select(i));
-  menu.append(el("li", {}, [b]));
-});
-document.addEventListener("keydown", (ev) => {
-  if (ev.key === "ArrowDown") { ev.preventDefault(); select(current + 1, true); }
-  if (ev.key === "ArrowUp") { ev.preventDefault(); select(current - 1, true); }
-});
-select(0);
-
-// Tonight's real moon, drawn from the date.
-(function moon() {
-  const now = new Date();
-  const synodic = 29.530588853;
-  const ref = Date.UTC(2000, 0, 6, 18, 14); // a known new moon
-  const age = (((now.getTime() - ref) / 86400000) % synodic + synodic) % synodic;
-  const p = age / synodic; // 0 new, 0.5 full
-  const names = ["New moon", "Waxing crescent", "First quarter", "Waxing gibbous", "Full moon", "Waning gibbous", "Last quarter", "Waning crescent"];
-  const name = names[Math.round(p * 8) % 8];
-  const r = 28, cx = 31, cy = 31;
-  const waxing = p < 0.5;
-  const k = Math.cos(p * 2 * Math.PI); // 1 new, -1 full
-  const rx = Math.abs(k) * r;
-  // lit half on the right when waxing; the terminator ellipse adds or removes the other half
-  const sweepOuter = waxing ? 1 : 0;
-  const sweepInner = (k < 0) === waxing ? 1 : 0;
-  const d = `M ${cx} ${cy - r} A ${r} ${r} 0 0 ${sweepOuter} ${cx} ${cy + r} A ${rx} ${r} 0 0 ${sweepInner} ${cx} ${cy - r} Z`;
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  document.getElementById("moon").innerHTML =
-    `<div><div class="day">${now.getMonth() + 1}/${now.getDate()} ${days[now.getDay()]}</div><div class="phase">${name}</div></div>` +
-    `<svg viewBox="0 0 62 62" role="img" aria-label="${name}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#07205f" stroke="#38dcff" stroke-width="1.5"/><path d="${d}" fill="#eefaff"/></svg>`;
-})();
-
-// Water: slow slanted bands and widening rings.
-(function sea() {
-  const c = document.getElementById("sea");
-  const g = c.getContext("2d");
-  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let w = 0, h = 0, rings = [];
-  function size() {
-    const d = Math.min(devicePixelRatio || 1, 2);
-    w = c.clientWidth; h = c.clientHeight;
-    c.width = w * d; c.height = h * d;
-    g.setTransform(d, 0, 0, d, 0, 0);
-  }
-  function frame(t) {
-    const s = t / 1000;
-    const grad = g.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0, "#030b26"); grad.addColorStop(0.55, "#07205f"); grad.addColorStop(1, "#0d45d6");
-    g.fillStyle = grad; g.fillRect(0, 0, w, h);
-    // slanted bands drifting right
-    g.save();
-    g.transform(1, 0, -0.42, 1, 0, 0);
-    for (let i = 0; i < 9; i++) {
-      const bw = 40 + (i * 53) % 150;
-      const x = ((i * 310 + s * (10 + i * 3)) % (w + h + 500)) - 200;
-      g.fillStyle = `rgba(56,220,255,${0.03 + (i % 3) * 0.022})`;
-      g.fillRect(x, 0, bw, h);
-    }
-    g.restore();
-    // rings
-    if (!still && Math.random() < 0.012 && rings.length < 5) rings.push({ x: Math.random() * w, y: h * (0.35 + Math.random() * 0.65), born: s });
-    rings = rings.filter((r) => s - r.born < 7);
-    for (const r of rings) {
-      const a = (s - r.born) / 7;
-      g.strokeStyle = `rgba(238,250,255,${0.22 * (1 - a)})`;
-      g.lineWidth = 1.5;
-      for (let k = 0; k < 3; k++) {
-        const rad = a * 260 - k * 34;
-        if (rad > 0) { g.beginPath(); g.ellipse(r.x, r.y, rad, rad * 0.32, 0, 0, Math.PI * 2); g.stroke(); }
-      }
-    }
-    if (!still) requestAnimationFrame(frame);
-  }
-  addEventListener("resize", () => { size(); if (still) frame(0); });
-  size();
-  requestAnimationFrame(frame);
-})();
-</script>
+<script src="app.js"></script>
 </body>
 </html>
