@@ -27,23 +27,43 @@ const ENTRIES = [
     id: "fun",
     name: "Builds for Fun",
     kind: "Personal builds, no client",
-    line: "Builds I made on my own time: a sci-fi desert arena, a gothic cathedral inside and out, and a quick F1-style race track.",
-    did: ["sci-fi arena", "gothic cathedral", "terrain", "interiors", "stained glass", "lighting", "race track"],
-    shots: [
-      { src: "img/scifi-overview.jpg", tab: "Arena", cap: "Desert outpost: a sunken duel arena with canyon walls all around." },
-      { src: "img/scifi-pit.jpg", tab: "Pit", cap: "Stone pit with stepped edges and cover to fight around." },
-      { src: "img/scifi-wreck.jpg", tab: "Wreck", cap: "A warship half buried in the dunes, still smoking." },
-      { src: "img/scifi-market.jpg", tab: "Market", cap: "Domed huts and market stalls next to the arena." },
-      { src: "img/cathedral.jpg", tab: "Cathedral", cap: "Gothic cathedral: twin spires, three portals, a rose window." },
-      { src: "img/cathedral-portals.jpg", tab: "Portals", cap: "Statues in the door jambs, the arches and the gallery above." },
-      { src: "img/cathedral-interior-nave.jpg", tab: "Nave", cap: "Inside: rib vaults, stained glass, pews down to the altar." },
-      { src: "img/cathedral-interior-west.jpg", tab: "Organ", cap: "Looking back at the organ loft and the west rose." },
-      { src: "img/cathedral-interior-aisle.jpg", tab: "Aisle", cap: "Side aisle, lit by candles and the windows." },
-      { src: "img/f1-overview.jpg", tab: "F1 track", cap: "Low effort: an F1-style circuit I threw together quickly as a test, all basic parts. Real track jobs get proper models." },
-      { src: "img/f1-grid.jpg", tab: "Grid", cap: "Quick test build: start grid, start lights and the pit wall." },
-      { src: "img/f1-chicane.jpg", tab: "Chicane", cap: "Quick test build: turns 1 to 3 with kerbs, gravel and stands." },
-      { src: "img/f1-stadium.jpg", tab: "Stadium", cap: "Quick test build: the stadium section with the podium in the middle." },
-      { src: "img/f1-pits.jpg", tab: "Pits", cap: "Quick test build: pit lane, garages and team pit wall stands." },
+    line: "Pick a build to see it.",
+    clients: [
+      {
+        label: "Sci-fi Arena",
+        line: "Desert outpost built around a sunken duel arena, with a crashed warship and a market next to it.",
+        did: ["sci-fi arena", "terrain", "props", "lighting"],
+        shots: [
+          { src: "img/scifi-overview.jpg", tab: "Arena", cap: "Desert outpost: a sunken duel arena with canyon walls all around." },
+          { src: "img/scifi-pit.jpg", tab: "Pit", cap: "Stone pit with stepped edges and cover to fight around." },
+          { src: "img/scifi-wreck.jpg", tab: "Wreck", cap: "A warship half buried in the dunes, still smoking." },
+          { src: "img/scifi-market.jpg", tab: "Market", cap: "Domed huts and market stalls next to the arena." },
+        ],
+      },
+      {
+        label: "Gothic Cathedral",
+        line: "A gothic cathedral, inside and out: spires, portals with statues, rib vaults and stained glass.",
+        did: ["gothic cathedral", "interiors", "stained glass", "lighting"],
+        shots: [
+          { src: "img/cathedral.jpg", tab: "Cathedral", cap: "Gothic cathedral: twin spires, three portals, a rose window." },
+          { src: "img/cathedral-portals.jpg", tab: "Portals", cap: "Statues in the door jambs, the arches and the gallery above." },
+          { src: "img/cathedral-interior-nave.jpg", tab: "Nave", cap: "Inside: rib vaults, stained glass, pews down to the altar." },
+          { src: "img/cathedral-interior-west.jpg", tab: "Organ", cap: "Looking back at the organ loft and the west rose." },
+          { src: "img/cathedral-interior-aisle.jpg", tab: "Aisle", cap: "Side aisle, lit by candles and the windows." },
+        ],
+      },
+      {
+        label: "F1 Track",
+        line: "Low effort: an F1-style circuit I threw together quickly as a test, all basic parts. Real track jobs get proper models.",
+        did: ["race track", "pit lane", "stands", "quick test"],
+        shots: [
+          { src: "img/f1-overview.jpg", tab: "Overview", cap: "The whole circuit: main straight, pits, the stadium section and the esses." },
+          { src: "img/f1-grid.jpg", tab: "Grid", cap: "Start grid, start lights and the pit wall." },
+          { src: "img/f1-chicane.jpg", tab: "Chicane", cap: "Turns 1 to 3 with kerbs, gravel and stands." },
+          { src: "img/f1-stadium.jpg", tab: "Stadium", cap: "The stadium section with the podium in the middle." },
+          { src: "img/f1-pits.jpg", tab: "Pits", cap: "Pit lane, garages and team pit wall stands." },
+        ],
+      },
     ],
   },
   {
@@ -148,13 +168,14 @@ function renderDetail() {
   detail.replaceChildren(box);
 }
 
-// Customer Builds: one tab per client (their username), and a slideshow of that client's screens.
+// Customer Builds and Builds for Fun: one tab per client (their username) or per build (its label),
+// and a slideshow of its screens.
 function renderClients(e, box) {
   const c = e.clients[client];
   const s = c.shots[shot];
   const users = el("ul", { className: "users" });
   e.clients.forEach((x, i) => {
-    const b = el("button", { type: "button", textContent: "@" + x.user });
+    const b = el("button", { type: "button", textContent: x.label || "@" + x.user });
     b.setAttribute("aria-pressed", String(i === client));
     b.addEventListener("click", () => { client = i; shot = 0; renderDetail(); });
     users.append(el("li", {}, [b]));
