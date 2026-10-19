@@ -27,8 +27,8 @@ const ENTRIES = [
     id: "fun",
     name: "Builds for Fun",
     kind: "Personal builds, no client",
-    line: "Builds I made on my own time: a sci-fi desert arena and a gothic cathedral, inside and out.",
-    did: ["sci-fi arena", "gothic cathedral", "terrain", "interiors", "stained glass", "lighting"],
+    line: "Builds I made on my own time: a sci-fi desert arena, a gothic cathedral inside and out, and a quick F1-style race track.",
+    did: ["sci-fi arena", "gothic cathedral", "terrain", "interiors", "stained glass", "lighting", "race track"],
     shots: [
       { src: "img/scifi-overview.jpg", tab: "Arena", cap: "Desert outpost: a sunken duel arena with canyon walls all around." },
       { src: "img/scifi-pit.jpg", tab: "Pit", cap: "Stone pit with stepped edges and cover to fight around." },
@@ -39,6 +39,11 @@ const ENTRIES = [
       { src: "img/cathedral-interior-nave.jpg", tab: "Nave", cap: "Inside: rib vaults, stained glass, pews down to the altar." },
       { src: "img/cathedral-interior-west.jpg", tab: "Organ", cap: "Looking back at the organ loft and the west rose." },
       { src: "img/cathedral-interior-aisle.jpg", tab: "Aisle", cap: "Side aisle, lit by candles and the windows." },
+      { src: "img/f1-overview.jpg", tab: "F1 track", cap: "Low effort: an F1-style circuit I threw together quickly as a test, all basic parts. Real track jobs get proper models." },
+      { src: "img/f1-grid.jpg", tab: "Grid", cap: "Quick test build: start grid, start lights and the pit wall." },
+      { src: "img/f1-chicane.jpg", tab: "Chicane", cap: "Quick test build: turns 1 to 3 with kerbs, gravel and stands." },
+      { src: "img/f1-stadium.jpg", tab: "Stadium", cap: "Quick test build: the stadium section with the podium in the middle." },
+      { src: "img/f1-pits.jpg", tab: "Pits", cap: "Quick test build: pit lane, garages and team pit wall stands." },
     ],
   },
   {
