@@ -89,6 +89,20 @@ const ENTRIES = [
           { src: "img/client-horror-exit-gate.jpg", tab: "Exit gate", cap: "Iron exit gate with its lever box." },
         ],
       },
+      {
+        user: "ibyfaha",
+        line: "A sea port chase map for a balloon tag game, with every container height and gap built around the game's own parkour movement.",
+        did: ["layout", "container yard", "parkour heights", "ziplines", "warehouses", "props"],
+        shots: [
+          { src: "img/client-port-overview.jpg", tab: "Overview", cap: "The whole port: container yard, warehouses, rail line, cranes and the ship." },
+          { src: "img/client-port-yard.jpg", tab: "Yard", cap: "Container aisles. One high you can vault, two high takes a wall jump, three high is a wall." },
+          { src: "img/client-port-ship.jpg", tab: "Ship", cap: "The quay with the cranes, the gangway and a zipline down into the yard." },
+          { src: "img/client-port-warehouse.jpg", tab: "Warehouse", cap: "Inside a warehouse: pallet racks, a mezzanine and stairs up to the roof." },
+          { src: "img/client-port-office.jpg", tab: "Office", cap: "The two floor port office with outside stairs." },
+          { src: "img/client-port-tower.jpg", tab: "Tower", cap: "Inside the control tower cabin." },
+          { src: "img/client-port-gate.jpg", tab: "Gate", cap: "The truck gate with its booths and barriers." },
+        ],
+      },
     ],
   },
   {
