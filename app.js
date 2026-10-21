@@ -5,25 +5,6 @@ if (window.top !== window.self) {
 
 const ENTRIES = [
   {
-    id: "games",
-    name: "My Games",
-    kind: "Screens from games I worked on",
-    line: "Everything here is quick work: each one took three or four days.",
-    did: ["map building", "horror fear system", "monster AI", "simulator bases", "riding and flight", "carry and sleep loop", "radars", "inventory and hotbar", "economy", "admin panel"],
-    shots: [
-      { src: "img/town.jpg", tab: "Town", cap: "A market town with a clock tower and a fountain square." },
-      { src: "img/hilltown.jpg", tab: "Hill town", cap: "A second town packed onto a ridge." },
-      { src: "img/map.jpg", tab: "Hub", cap: "Eight player ranches around the market stalls." },
-      { src: "img/forest.jpg", tab: "Night forest", cap: "A horror arena: dead trees, fog and flickering lamps." },
-      { src: "img/graveyard.jpg", tab: "Graveyard", cap: "Something with red eyes waits by the gate." },
-      { src: "img/plaza.jpg", tab: "Plaza", cap: "A simulator plaza: player bases, a walk track and a row of shops." },
-      { src: "img/skytrack.jpg", tab: "Sky track", cap: "A floating track of themed zones, each behind its own gate." },
-      { src: "img/ride.jpg", tab: "Ride", cap: "The run cycle is code, not an uploaded animation." },
-      { src: "img/carry.jpg", tab: "Carry", cap: "Pick one up and the clock starts." },
-      { src: "img/radars.jpg", tab: "Radars", cap: "Six radars, each built from one row of config." },
-    ],
-  },
-  {
     id: "fun",
     name: "Builds for Fun",
     kind: "Personal builds, no client",
@@ -116,7 +97,7 @@ const ENTRIES = [
     id: "about",
     name: "About",
     kind: "Who is behind this",
-    line: "I've been building on Roblox for two years and scripting for one. I can do almost any kind of Roblox work: maps and terrain, movement, progression, saving, tools, balance. The screens under My Games are quick jobs of three or four days each, so judge them as that. Give me longer and you get more.",
+    line: "I've been building on Roblox for two years and scripting for one. I can do almost any kind of Roblox work: maps and terrain, movement, progression, saving, tools, balance.",
     did: ["building", "terrain", "Luau", "Rojo", "client and server", "DataStores", "balancing"],
   },
   {
